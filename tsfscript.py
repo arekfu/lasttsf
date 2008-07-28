@@ -223,8 +223,7 @@ def separate( string ):
 
 def debug( message ):
     """ Prints debug message to stdout """
-
-    print debug_prefix + " " + message
+    log.write( debug_prefix + ' ' + message + '\n' )
 
 def main( ):
     global app
@@ -234,13 +233,18 @@ def main( ):
 
 def onStop(signum, stackframe):
     """ Called when script is stopped by user """
-    global app
+    global app, log
     app.quitting = True
+    log.close()
     sys.exit()
 
+global log
+
 if __name__ == "__main__":
+    log = open( '/home/davide/tsfscript.log', 'w' )
     mainapp = threading.Thread(target=main)
     mainapp.start()
     signal.signal(signal.SIGTERM, onStop)
     # necessary for signal catching
     while 1: time.sleep(120)
+
