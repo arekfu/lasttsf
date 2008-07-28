@@ -72,12 +72,18 @@ class Notification( QCustomEvent ):
 class Test( QApplication ):
     """ The main application, also sets up the Qt event loop """
 
+    def saveState( self, sessionmanager ):
+        # script is started by amarok, not by KDE's session manager
+        sessionmanager.setRestartHint(QSessionManager.RestartNever)
+
     def __init__( self, args ):
         QApplication.__init__( self, args )
         debug( "Started." )
         self.track = None
         self.oldtrack = None
 	self.radioMonitor = None
+	self.quitting = False
+	self.quitradio = False
 
         # Start separate thread for reading data from stdin
         self.stdinReader = threading.Thread( target = self.readStdin )
@@ -102,7 +108,7 @@ class Test( QApplication ):
     def readStdin( self ):
         """ Reads incoming notifications from stdin """
 
-        while True:
+        while not self.quitting:
             # Read data from stdin. Will block until data arrives.
             line = sys.stdin.readline()
 
@@ -160,11 +166,11 @@ class Test( QApplication ):
 
     def engineStatePause( self ):
         """ Called when Engine state changes to Pause """
-        pass
+        self.radiokill()
 
     def engineStateEmpty( self ):
         """ Called when Engine state changes to Empty """
-        pass
+        self.radiokill()
 
     def trackChange( self ):
         """ Called when a new track starts """
@@ -173,16 +179,18 @@ class Test( QApplication ):
 	stdin.close()
 	stdout.close()
         if self.nowplaying != "TSF Jazz":
-            try:
-	       self.radioMonitor.exit()
-	    except:
-	       pass
+            self.radiokill()
+        self.quitradio = False
         self.radioMonitor = threading.Thread( target = self.radio )
         self.radioMonitor.start()
 
+    def radiokill( self ):
+        """ Try to kill a running radio-monitor thread """
+        self.quitradio = True
+
     def radio( self ):
         """ Connect to TSF Jazz and submit track information to Last.fm """
-	while True:
+	while not self.quitting and not self.quitradio:
             debug( "Downloading track information..." )
             stdin, stdout = os.popen2("wget -O - --quiet http://www.tsfjazz.com/getSongInformations.php")
 	    self.track = stdout.read().strip()
@@ -196,13 +204,22 @@ class Test( QApplication ):
 		    debug( "WARNING: Character '|' not found in track name!" )
 		    return
 		artist, title = self.oldtrack[:pos].title(), self.oldtrack[pos+1:].title()
+		artist = separate( artist )
 		debug( "Submitting track " + title + "by artist " + artist )
-		os.system( "/usr/lib/lastfmsubmitd/lastfmsubmit --artist '" + artist + "' --title '" + title + "'" )
+		os.system( "/usr/lib/lastfmsubmitd/lastfmsubmit --artist '" + artist + "' --title '" + title + "' --length 3:30" )
             self.oldtrack = self.track
             time.sleep(30)
 
-
 ############################################################################
+
+def separate( string ):
+    pos = string.find("/")
+    if pos == -1:
+        return string
+    elif string[pos+1:].find("/") == -1:
+        return string[:pos] + " and " + string[pos+1:]
+    else:
+        return string[:pos] + ", " + separate( string[pos+1:] )
 
 def debug( message ):
     """ Prints debug message to stdout """
@@ -210,17 +227,20 @@ def debug( message ):
     print debug_prefix + " " + message
 
 def main( ):
+    global app
     app = Test( sys.argv )
 
     app.exec_loop()
 
 def onStop(signum, stackframe):
     """ Called when script is stopped by user """
-    pass
+    global app
+    app.quitting = True
+    sys.exit()
 
 if __name__ == "__main__":
     mainapp = threading.Thread(target=main)
     mainapp.start()
-    signal.signal(15, onStop)
+    signal.signal(signal.SIGTERM, onStop)
     # necessary for signal catching
     while 1: time.sleep(120)
