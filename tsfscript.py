@@ -180,9 +180,10 @@ class Test( QApplication ):
 	stdout.close()
         if self.nowplaying != "TSF Jazz":
             self.radiokill()
-        self.quitradio = False
-        self.radioMonitor = threading.Thread( target = self.radio )
-        self.radioMonitor.start()
+	if self.radioMonitor == None or not self.radioMonitor.isAlive():
+            self.quitradio = False
+            self.radioMonitor = threading.Thread( target = self.radio )
+            self.radioMonitor.start()
 
     def radiokill( self ):
         """ Try to kill a running radio-monitor thread """
