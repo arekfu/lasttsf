@@ -20,6 +20,7 @@ import sys
 import threading
 import signal
 import time
+from math import floor
 
 try:
     from qt import *
@@ -84,6 +85,7 @@ class Test( QApplication ):
 	self.radioMonitor = None
 	self.quitting = False
 	self.quitradio = False
+	self.duration = time.time()
 
         # Start separate thread for reading data from stdin
         self.stdinReader = threading.Thread( target = self.readStdin )
@@ -206,8 +208,15 @@ class Test( QApplication ):
 		    return
 		artist, title = self.oldtrack[:pos].title(), self.oldtrack[pos+1:].title()
 		artist = separate( artist )
-		debug( "Submitting track " + title + "by artist " + artist )
-		os.system( "/usr/lib/lastfmsubmitd/lastfmsubmit --artist '" + artist + "' --title '" + title + "' --length 3:30" )
+		oldduration = self.duration
+		self.duration = time.time()
+		length = self.duration - oldduration
+		min = floor( length/60 )
+		sec = floor( length - min )
+		debug( "Submitting track " + title + " by artist " + artist )
+		os.system( "/usr/lib/lastfmsubmitd/lastfmsubmit --artist '" \
+		    + artist + "' --title '" + title + "' --length " \
+		    + str( min ) + ":" + str( sec ) )
             self.oldtrack = self.track
             time.sleep(30)
 
