@@ -224,6 +224,7 @@ def separate( string ):
 def debug( message ):
     """ Prints debug message to stdout """
     log.write( debug_prefix + ' ' + message + '\n' )
+    log.flush()
 
 def main( ):
     global app
