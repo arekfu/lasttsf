@@ -33,7 +33,6 @@ try:
 except:
     os.popen( "kdialog --sorry 'lastfmsubmitd (Last.fm bindings for Python) is required for this script.'" )
 
-# Replace with real name
 debug_prefix = "[LastTSF]"
 
 class ConfigDialog( QDialog ):
@@ -98,7 +97,7 @@ class Test( QApplication ):
         self.stdinReader = threading.Thread( target = self.readStdin )
         self.stdinReader.start()
 
-        self.readSettings()
+        #self.readSettings()
 
     def readSettings( self ):
         """ Reads settings from configuration file """
@@ -186,6 +185,8 @@ class Test( QApplication ):
     def trackChange( self ):
         """ Called when a new track starts """
 	self.checkTSF()
+
+############################################################################
 
     def radiokill( self ):
         """ Try to kill a running radio-monitor thread """
