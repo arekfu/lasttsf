@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 ############################################################################
-# Python-Qt template script for Amarok
-# (c) 2005 Mark Kretschmann <markey@web.de>
+# TSF.fm script 
+# submits metadata from TSF Jazz to Last.fm
 #
-# Depends on: Python 2.2, PyQt
+# Depends on: Python 2.2, PyQt, lastfmsubmitd
 ############################################################################
 #
 # This program is free software; you can redistribute it and/or modify
