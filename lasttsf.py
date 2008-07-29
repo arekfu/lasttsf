@@ -29,7 +29,6 @@ except:
     raise
 
 try:
-    import lastfm
     import lastfm.client
 except:
     os.popen( "kdialog --sorry 'lastfmsubmitd (Last.fm bindings for Python) is required for this script.'" )
