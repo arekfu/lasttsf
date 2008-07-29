@@ -143,7 +143,7 @@ class Test( QApplication ):
             self.engineStatePause()
 
         if string.contains( "engineStateChange: empty" ):
-            self.engineStatePause()
+            self.engineStateEmpty()
 
         if string.contains( "trackChange" ):
             self.trackChange()
@@ -169,10 +169,12 @@ class Test( QApplication ):
     def engineStatePause( self ):
         """ Called when Engine state changes to Pause """
         self.radiokill()
+	self.oldtrack = None
 
     def engineStateEmpty( self ):
         """ Called when Engine state changes to Empty """
         self.radiokill()
+	self.oldtrack = None
 
     def trackChange( self ):
         """ Called when a new track starts """
@@ -182,7 +184,7 @@ class Test( QApplication ):
 	stdout.close()
         if self.nowplaying != "TSF Jazz":
             self.radiokill()
-	if self.radioMonitor == None or not self.radioMonitor.isAlive():
+	elif self.radioMonitor == None or not self.radioMonitor.isAlive():
             self.quitradio = False
             self.radioMonitor = threading.Thread( target = self.radio )
             self.radioMonitor.start()
@@ -207,13 +209,20 @@ class Test( QApplication ):
 		    debug( "WARNING: Character '|' not found in track name!" )
 		    return
 		artist, title = self.oldtrack[:pos].title(), self.oldtrack[pos+1:].title()
+		pos=artist.find("   ")
+		if pos != -1:
+                    artist = artist[:pos]
 		artist = separate( artist )
+
+                artist = purge( artist )
+		title = purge( title )
+
 		oldduration = self.duration
 		self.duration = time.time()
 		length = self.duration - oldduration
-		min = floor( length/60 )
-		sec = floor( length - min )
-		debug( "Submitting track " + title + " by artist " + artist )
+		min = int( floor( length/60 ) )
+		sec = int( floor( length - 60*min ) )
+		debug( "Submitting track " + title + " by artist " + artist + ", length: " + str(min)+":"+str(sec) )
 		os.system( "/usr/lib/lastfmsubmitd/lastfmsubmit --artist '" \
 		    + artist + "' --title '" + title + "' --length " \
 		    + str( min ) + ":" + str( sec ) )
@@ -221,6 +230,17 @@ class Test( QApplication ):
             time.sleep(30)
 
 ############################################################################
+
+def purge( string ):
+    out = purgeampsand( string )
+    return out
+
+def purgeampsand( string ):
+    out = string
+    pos = out.lower().find("&amp;")
+    while pos != -1:
+        out = out[:pos] + "&" + out[pos+5:]
+    return out
 
 def separate( string ):
     pos = string.find("/")
