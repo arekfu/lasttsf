@@ -207,6 +207,9 @@ class Test( QApplication ):
 		    debug( "WARNING: Character '|' not found in track name!" )
 		    return
 		artist, title = self.oldtrack[:pos].title(), self.oldtrack[pos+1:].title()
+		pos=artist.find("   ")
+		if pos != -1:
+                    artist = artist[:pos]
 		artist = separate( artist )
 		oldduration = self.duration
 		self.duration = time.time()
