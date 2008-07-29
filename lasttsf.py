@@ -226,14 +226,14 @@ class Test( QApplication ):
 
 		oldduration = self.duration
 		self.duration = time.time()
-		length = self.duration - oldduration
-		min = int( floor( length/60 ) )
-		sec = int( floor( length - 60*min ) )
+		length = int( self.duration - oldduration )
+#		min = int( floor( length/60 ) )
+#		sec = int( floor( length - 60*min ) )
 
                 debug( "Submitting track " + title + " by artist " + artist + ", length: " + str(min)+":"+str(sec) )
 		song = {'artist': artist, \
 		        'title':  title, \
-			'length': str(min) + ':' + str(sec), \
+			'length': length, \
 			'time':   time.gmtime()}
 	        self.cli.log.info('Played song: %s' % lastfm.repr(song))
                 self.cli.submit(song)
