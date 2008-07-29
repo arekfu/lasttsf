@@ -30,7 +30,7 @@ except:
 
 
 # Replace with real name
-debug_prefix = "[TSF.fm]"
+debug_prefix = "[LastTSF]"
 
 class ConfigDialog( QDialog ):
     """ Configuration widget """
@@ -38,7 +38,7 @@ class ConfigDialog( QDialog ):
     def __init__( self ):
         QDialog.__init__( self )
         self.setWFlags( Qt.WDestructiveClose )
-        self.setCaption( "TSF.fm - Amarok" )
+        self.setCaption( "LastTSF - Amarok" )
 
         foo = None
         try:
