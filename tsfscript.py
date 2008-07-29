@@ -214,9 +214,9 @@ class Test( QApplication ):
 		oldduration = self.duration
 		self.duration = time.time()
 		length = self.duration - oldduration
-		min = floor( length/60 )
-		sec = floor( length - min )
-		debug( "Submitting track " + title + " by artist " + artist )
+		min = int( floor( length/60 ) )
+		sec = int( floor( length - 60*min ) )
+		debug( "Submitting track " + title + " by artist " + artist + ", length: " + str(min)+":"+str(sec) )
 		os.system( "/usr/lib/lastfmsubmitd/lastfmsubmit --artist '" \
 		    + artist + "' --title '" + title + "' --length " \
 		    + str( min ) + ":" + str( sec ) )
