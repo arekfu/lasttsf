@@ -213,6 +213,10 @@ class Test( QApplication ):
 		if pos != -1:
                     artist = artist[:pos]
 		artist = separate( artist )
+
+                artist = purge( artist )
+		title = purge( title )
+
 		oldduration = self.duration
 		self.duration = time.time()
 		length = self.duration - oldduration
@@ -226,6 +230,17 @@ class Test( QApplication ):
             time.sleep(30)
 
 ############################################################################
+
+def purge( string ):
+    out = purgeampsand( string )
+    return out
+
+def purgeampsand( string ):
+    out = string
+    pos = out.lower().find("&amp;")
+    while pos != -1:
+        out = out[:pos] + "&" + out[pos+5:]
+    return out
 
 def separate( string ):
     pos = string.find("/")
