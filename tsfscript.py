@@ -184,7 +184,7 @@ class Test( QApplication ):
 	stdout.close()
         if self.nowplaying != "TSF Jazz":
             self.radiokill()
-	if self.radioMonitor == None or not self.radioMonitor.isAlive():
+	elif self.radioMonitor == None or not self.radioMonitor.isAlive():
             self.quitradio = False
             self.radioMonitor = threading.Thread( target = self.radio )
             self.radioMonitor.start()
