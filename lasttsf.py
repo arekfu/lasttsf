@@ -222,7 +222,7 @@ class Test( QApplication ):
 #		min = int( floor( length/60 ) )
 #		sec = int( floor( length - 60*min ) )
 
-                debug( "Submitting track " + title + " by artist " + artist + ", length: " + str(min)+":"+str(sec) )
+                debug( "Submitting track " + title + " by artist " + artist + ", length: " + str( length ) + " s"  )
 		song = {'artist': artist, \
 		        'title':  title, \
 			'length': length, \
