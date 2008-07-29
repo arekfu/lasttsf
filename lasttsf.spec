@@ -1,0 +1,2 @@
+name = LastTSF
+type = generic
