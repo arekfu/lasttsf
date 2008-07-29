@@ -169,10 +169,12 @@ class Test( QApplication ):
     def engineStatePause( self ):
         """ Called when Engine state changes to Pause """
         self.radiokill()
+	self.oldtrack = None
 
     def engineStateEmpty( self ):
         """ Called when Engine state changes to Empty """
         self.radiokill()
+	self.oldtrack = None
 
     def trackChange( self ):
         """ Called when a new track starts """
