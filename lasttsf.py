@@ -291,7 +291,7 @@ def onStop(signum, stackframe):
 global log
 
 if __name__ == "__main__":
-    log = open( '/home/davide/tsfscript.log', 'w' )
+    log = open( 'lasttsf.log', 'w' )
     mainapp = threading.Thread(target=main)
     mainapp.start()
     signal.signal(signal.SIGTERM, onStop)
