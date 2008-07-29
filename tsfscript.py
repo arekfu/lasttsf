@@ -143,7 +143,7 @@ class Test( QApplication ):
             self.engineStatePause()
 
         if string.contains( "engineStateChange: empty" ):
-            self.engineStatePause()
+            self.engineStateEmpty()
 
         if string.contains( "trackChange" ):
             self.trackChange()
