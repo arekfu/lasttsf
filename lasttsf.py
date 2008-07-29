@@ -221,8 +221,8 @@ class Test( QApplication ):
                     artist = artist[:pos]
 		artist = separate( artist )
 
-                artist = purge( artist )
-		title = purge( title )
+                artist = sanitize( artist )
+		title = sanitize( title )
 
 		oldduration = self.duration
 		self.duration = time.time()
@@ -246,11 +246,11 @@ class Test( QApplication ):
 
 ############################################################################
 
-def purge( string ):
-    out = purgeampsand( string )
+def sanitize( string ):
+    out = sanitize_ampsand( string )
     return out
 
-def purgeampsand( string ):
+def sanitize_ampsand( string ):
     out = string
     pos = out.lower().find("&amp;")
     while pos != -1:
