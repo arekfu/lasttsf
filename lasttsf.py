@@ -28,6 +28,11 @@ except:
     os.popen( "kdialog --sorry 'PyQt (Qt bindings for Python) is required for this script.'" )
     raise
 
+try:
+    import lastfm
+    import lastfm.client
+except:
+    os.popen( "kdialog --sorry 'lastfmsubmitd (Last.fm bindings for Python) is required for this script.'" )
 
 # Replace with real name
 debug_prefix = "[LastTSF]"
@@ -86,6 +91,8 @@ class Test( QApplication ):
 	self.quitting = False
 	self.quitradio = False
 	self.duration = time.time()
+        self.cli = lastfm.client.Client('LastTSF')
+        self.cli.open_log()
 
         # Start separate thread for reading data from stdin
         self.stdinReader = threading.Thread( target = self.readStdin )
@@ -222,10 +229,18 @@ class Test( QApplication ):
 		length = self.duration - oldduration
 		min = int( floor( length/60 ) )
 		sec = int( floor( length - 60*min ) )
-		debug( "Submitting track " + title + " by artist " + artist + ", length: " + str(min)+":"+str(sec) )
-		os.system( "/usr/lib/lastfmsubmitd/lastfmsubmit --artist '" \
-		    + artist + "' --title '" + title + "' --length " \
-		    + str( min ) + ":" + str( sec ) )
+
+                debug( "Submitting track " + title + " by artist " + artist + ", length: " + str(min)+":"+str(sec) )
+		song = {'artist': artist, \
+		        'title':  title, \
+			'length': str(min) + ':' + str(sec), \
+			'time':   time.gmtime()}
+	        self.cli.log.info('Played song: %s' % lastfm.repr(song))
+                self.cli.submit(song)
+
+#		os.system( "/usr/lib/lastfmsubmitd/lastfmsubmit --artist '" \
+#		    + artist + "' --title '" + title + "' --length " \
+#		    + str( min ) + ":" + str( sec ) )
             self.oldtrack = self.track
             time.sleep(30)
 
