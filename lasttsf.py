@@ -93,6 +93,7 @@ class Test( QApplication ):
 	self.duration = time.time()
         self.cli = lastfm.client.Client('LastTSF')
         self.cli.open_log()
+	self.checkTSF()
 
         # Start separate thread for reading data from stdin
         self.stdinReader = threading.Thread( target = self.readStdin )
@@ -185,16 +186,7 @@ class Test( QApplication ):
 
     def trackChange( self ):
         """ Called when a new track starts """
-        stdin, stdout = os.popen2("dcop amarok player nowPlaying")
-	self.nowplaying = stdout.read().strip()
-	stdin.close()
-	stdout.close()
-        if self.nowplaying != "TSF Jazz":
-            self.radiokill()
-	elif self.radioMonitor == None or not self.radioMonitor.isAlive():
-            self.quitradio = False
-            self.radioMonitor = threading.Thread( target = self.radio )
-            self.radioMonitor.start()
+	self.checkTSF()
 
     def radiokill( self ):
         """ Try to kill a running radio-monitor thread """
@@ -243,6 +235,18 @@ class Test( QApplication ):
 #		    + str( min ) + ":" + str( sec ) )
             self.oldtrack = self.track
             time.sleep(30)
+
+    def checkTSF( self ):
+        stdin, stdout = os.popen2("dcop amarok player nowPlaying")
+	self.nowplaying = stdout.read().strip()
+	stdin.close()
+	stdout.close()
+        if self.nowplaying != "TSF Jazz":
+            self.radiokill()
+	elif self.radioMonitor == None or not self.radioMonitor.isAlive():
+            self.quitradio = False
+            self.radioMonitor = threading.Thread( target = self.radio )
+            self.radioMonitor.start()
 
 ############################################################################
 
