@@ -140,45 +140,41 @@ class Test( QApplication ):
             stdin.close()
             stdout.close()
             debug( "Done: " + self.track )
-            if self.track != self.oldtrack:
-                if self.oldtrack != None:
-                    # Get track and artist name
-                    pos = self.oldtrack.find("|")
-                    if pos == -1:
-                        debug( "WARNING: Character '|' not found in track name!" )
-                        return
+            if self.track != self.oldtrack and self.oldtrack != None:
+                # Get track and artist name
+                pos = self.oldtrack.find("|")
+                if pos == -1:
+                    debug( "WARNING: Character '|' not found in track name!" )
+                    return
 
-                    artist, title = self.oldtrack[:pos].title(), self.oldtrack[pos+1:].title()
+                artist, title = self.oldtrack[:pos].title(), self.oldtrack[pos+1:].title()
 
-                    # Sanitize artist name and title
-                    pos=artist.find("   ")
-                    if pos != -1:
-                        artist = artist[:pos]
+                # Sanitize artist name and title
+                pos=artist.find("   ")
+                if pos != -1:
+                    artist = artist[:pos]
 
-                    artist = separate( artist )
+                artist = separate( artist )
 
-                    artist = sanitize( artist )
-                    title = sanitize( title )
+                artist = sanitize( artist )
+                title = sanitize( title )
 
-                    # Calculate track length
-                    oldduration = self.duration
-                    self.duration = time.time()
-                    length = int( self.duration - oldduration )
+                # Calculate track length
+                oldduration = self.duration
+                self.duration = time.time()
+                length = int( self.duration - oldduration )
 
-                    # Submit
-                    debug( "Submitting track " + title + " by artist " + artist + ", length: " + str( length ) + " s"  )
-                    song = {'artist': artist, \
-                            'title':  title, \
-                            'length': length, \
-                            'time':   time.gmtime()}
-                    self.cli.log.info('Played song: %s' % lastfm.repr(song))
-                    self.cli.submit(song)
+                # Submit
+                debug( "Submitting track " + title + " by artist " + artist + ", length: " + str( length ) + " s"  )
+                song = {'artist': artist, \
+                        'title':  title, \
+                        'length': length, \
+                        'time':   time.gmtime()}
+                self.cli.log.info('Played song: %s' % lastfm.repr(song))
+                self.cli.submit(song)
 
-                    # Update the old track
-                    self.oldtrack = self.track
-                else:
-                    # Update the old track
-                    self.oldtrack = self.track
+            # Update the old track
+            self.oldtrack = self.track
 
             time.sleep(30)
 
