@@ -19,6 +19,8 @@ Download the .tar.bz2 and install it using Amarok's Script Manager.
 You don't have to do anything special! Once the script has been started, it will automatically detect if you are listening to <i>TSF Jazz</i> and react accordingly.
 </p><p>
 <b>Dependencies and prerequisites:</b><br>
+The script depends on PyQt, to handle notifications from Amarok. This is probably unnecessarily complicated, but until I realise how this should be done I prefer to keep the dependency.
+
 LastTSF depends on lastfmsubmitd, a daemon that allows users to submit tracks to Last.fm. LastTSF will also need the Python interface to lastfmsubmitd's spooling system, also provided by the lastfmsubmitd package. The daemon must be configured with your Last.fm username and password and your user account must be allowed to submit tracks through lastfmsubmitd (on Debian, only users belonging to a certain group are allowed to submit; see the lastfmsubmitd documentation).
 
 lastfmsubmitd is available in Debian, Ubuntu and Kubuntu as a package; I'm not sure about other distros, but you can always download the source from <a href="http://www.red-bean.com/~decklin/software/lastfmsubmitd/">here</a>.
