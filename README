@@ -5,11 +5,11 @@ LastTSF is a script to submit track metadata to Last.fm when you are listening t
 </p><p>
 <b>Long description:</b><br>
 Have you ever listened to <i>TSF Jazz</i>? It's a great French jazz radio station. They have an excellent selection of music, but it's a pity that they don't broadcast the right track metadata! All the songs you listen to will never show up in your Last.fm charts... unless you use LastTSF.
-
+</p><p>
 When you listen to <i>TSF Jazz</i>, LastTSF will connect to <a href="http://www.tsfjazz.com">their website</a> and download artist name and title of the song you are listening to. When the song is over, the script will submit the information collected to Last.fm.
-
+</p><p>
 In order to use Amarok to listen to <i>TSF Jazz</i>, you should use <a href="http://broadcast.infomaniak.net:80/tsfjazz-high.mp3">this link</a>.
-
+</p><p>
 WARNING! The link is correct as of July 2008, but may well change in the future! Please notify me if the script stops working with a new link.
 </p><p>
 <b>Installation:</b><br>
@@ -20,9 +20,9 @@ You don't have to do anything special! Once the script has been started, it will
 </p><p>
 <b>Dependencies and prerequisites:</b><br>
 The script depends on PyQt, to handle notifications from Amarok. This is probably unnecessarily complicated, but until I realise how this should be done I prefer to keep the dependency.
-
-LastTSF depends on lastfmsubmitd, a daemon that allows users to submit tracks to Last.fm. LastTSF will also need the Python interface to lastfmsubmitd's spooling system, also provided by the lastfmsubmitd package. The daemon must be configured with your Last.fm username and password and your user account must be allowed to submit tracks through lastfmsubmitd (on Debian, only users belonging to a certain group are allowed to submit; see the lastfmsubmitd documentation).
-
+</p><p>
+LastTSF depends also on lastfmsubmitd, a daemon that allows users to submit tracks to Last.fm. LastTSF will also need the Python interface to lastfmsubmitd's spooling system, also provided by the lastfmsubmitd package. The daemon must be configured with your Last.fm username and password and your user account must be allowed to submit tracks through lastfmsubmitd (on Debian, only users belonging to a certain group are allowed to submit; see the lastfmsubmitd documentation).
+</p><p>
 lastfmsubmitd is available in Debian, Ubuntu and Kubuntu as a package; I'm not sure about other distros, but you can always download the source from <a href="http://www.red-bean.com/~decklin/software/lastfmsubmitd/">here</a>.
 </p><p>
 <b>Changelog:</b><br>
