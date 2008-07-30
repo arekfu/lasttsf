@@ -176,11 +176,11 @@ class Test( QApplication ):
             time.sleep(30)
 
     def checkTSF( self ):
-        stdin, stdout = os.popen2("dcop amarok player nowPlaying")
+        stdin, stdout = os.popen2("dcop amarok player encodedURL")
 	self.nowplaying = stdout.read().strip()
 	stdin.close()
 	stdout.close()
-        if self.nowplaying != "TSF Jazz":
+        if self.nowplaying.lower().find("tsfjazz") == -1:
             self.radiokill()
 	elif self.radioMonitor == None or not self.radioMonitor.isAlive():
             self.quitradio = False
