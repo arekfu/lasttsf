@@ -147,7 +147,8 @@ class Test( QApplication ):
                     if pos == -1:
                         debug( "WARNING: Character '|' not found in track name!" )
                         return
-                        artist, title = self.oldtrack[:pos].title(), self.oldtrack[pos+1:].title()
+
+                    artist, title = self.oldtrack[:pos].title(), self.oldtrack[pos+1:].title()
 
                     # Sanitize artist name and title
                     pos=artist.find("   ")
@@ -196,10 +197,12 @@ class Test( QApplication ):
 ############################################################################
 
 def sanitize( string ):
+    """ Remove bad constructs from string """
     out = sanitize_ampsand( string )
     return out
 
 def sanitize_ampsand( string ):
+    """ Substitute "&amp;" with "&" """
     out = string
     pos = out.lower().find("&amp;")
     while pos != -1:
@@ -207,6 +210,7 @@ def sanitize_ampsand( string ):
     return out
 
 def separate( string ):
+    """ Split multiple artist names with commas and "and"s """
     pos = string.find("/")
     if pos == -1:
         return string
