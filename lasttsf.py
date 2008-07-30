@@ -210,7 +210,7 @@ def separate( string ):
         return string[:pos] + ", " + separate( string[pos+1:] )
 
 def debug( message ):
-    """ Prints debug message to stdout """
+    """ Prints debug message to log file """
     log.write( debug_prefix + ' ' + message + '\n' )
     log.flush()
 
