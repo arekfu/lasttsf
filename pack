@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd ..
+tar -cjf lasttsf.amarokscript.tar.bz2 --exclude=pack --exclude=.git -p lasttsf
