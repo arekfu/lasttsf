@@ -94,12 +94,6 @@ class Test( QApplication ):
         if string.contains( "configure" ):
             self.configure()
 
-        if string.contains( "engineStateChange: play" ):
-            self.engineStatePlay()
-
-        if string.contains( "engineStateChange: idle" ):
-            self.engineStateIdle()
-
         if string.contains( "engineStateChange: pause" ):
             self.engineStatePause()
 
