@@ -31,6 +31,7 @@ try:
     import lastfm.client
 except:
     os.popen( "kdialog --sorry 'lastfmsubmitd (Last.fm bindings for Python) is required for this script.'" )
+    raise
 
 debug_prefix = "[LastTSF]"
 
@@ -52,13 +53,13 @@ class Test( QApplication ):
         debug( "Started." )
         self.track = None
         self.oldtrack = None
-	self.radioMonitor = None
-	self.quitting = False
-	self.quitradio = False
-	self.duration = time.time()
+        self.radioMonitor = None
+        self.quitting = False
+        self.quitradio = False
+        self.duration = time.time()
         self.cli = lastfm.client.Client('LastTSF')
         self.cli.open_log()
-	self.checkTSF()
+        self.checkTSF()
 
         # Start separate thread for reading data from stdin
         self.stdinReader = threading.Thread( target = self.readStdin )
@@ -113,16 +114,16 @@ class Test( QApplication ):
     def engineStatePause( self ):
         """ Called when Engine state changes to Pause """
         self.radiokill()
-	self.oldtrack = None
+        self.oldtrack = None
 
     def engineStateEmpty( self ):
         """ Called when Engine state changes to Empty """
         self.radiokill()
-	self.oldtrack = None
+        self.oldtrack = None
 
     def trackChange( self ):
         """ Called when a new track starts """
-	self.checkTSF()
+        self.checkTSF()
 
 ############################################################################
 
@@ -132,57 +133,62 @@ class Test( QApplication ):
 
     def radio( self ):
         """ Connect to TSF Jazz and submit track information to Last.fm """
-	while not self.quitting and not self.quitradio:
+        while not self.quitting and not self.quitradio:
             debug( "Downloading track information..." )
             stdin, stdout = os.popen2("wget -O - --quiet http://www.tsfjazz.com/getSongInformations.php")
-	    self.track = stdout.read().strip()
-	    stdin.close()
-	    stdout.close()
-	    debug( "Done: " + self.track )
-            if self.track != self.oldtrack and self.oldtrack != None:
-                # Get track and artist name
-                pos = self.oldtrack.find("|")
-		if pos == -1:
-		    debug( "WARNING: Character '|' not found in track name!" )
-		    return
-		artist, title = self.oldtrack[:pos].title(), self.oldtrack[pos+1:].title()
+            self.track = stdout.read().strip()
+            stdin.close()
+            stdout.close()
+            debug( "Done: " + self.track )
+            if self.track != self.oldtrack:
+                if self.oldtrack != None:
+                    # Get track and artist name
+                    pos = self.oldtrack.find("|")
+                    if pos == -1:
+                        debug( "WARNING: Character '|' not found in track name!" )
+                        return
+                        artist, title = self.oldtrack[:pos].title(), self.oldtrack[pos+1:].title()
 
-		# Sanitize artist name and title
-		pos=artist.find("   ")
-		if pos != -1:
-                    artist = artist[:pos]
-		artist = separate( artist )
+                    # Sanitize artist name and title
+                    pos=artist.find("   ")
+                    if pos != -1:
+                        artist = artist[:pos]
 
-                artist = sanitize( artist )
-		title = sanitize( title )
+                    artist = separate( artist )
 
-		# Calculate track length
-		oldduration = self.duration
-		self.duration = time.time()
-		length = int( self.duration - oldduration )
+                    artist = sanitize( artist )
+                    title = sanitize( title )
 
-		# Submit
-                debug( "Submitting track " + title + " by artist " + artist + ", length: " + str( length ) + " s"  )
-		song = {'artist': artist, \
-		        'title':  title, \
-			'length': length, \
-			'time':   time.gmtime()}
-	        self.cli.log.info('Played song: %s' % lastfm.repr(song))
-                self.cli.submit(song)
+                    # Calculate track length
+                    oldduration = self.duration
+                    self.duration = time.time()
+                    length = int( self.duration - oldduration )
 
-		# Update the old track
-                self.oldtrack = self.track
+                    # Submit
+                    debug( "Submitting track " + title + " by artist " + artist + ", length: " + str( length ) + " s"  )
+                    song = {'artist': artist, \
+                            'title':  title, \
+                            'length': length, \
+                            'time':   time.gmtime()}
+                    self.cli.log.info('Played song: %s' % lastfm.repr(song))
+                    self.cli.submit(song)
+
+                    # Update the old track
+                    self.oldtrack = self.track
+                else:
+                    # Update the old track
+                    self.oldtrack = self.track
 
             time.sleep(30)
 
     def checkTSF( self ):
         stdin, stdout = os.popen2("dcop amarok player encodedURL")
-	self.nowplaying = stdout.read().strip()
-	stdin.close()
-	stdout.close()
+        self.nowplaying = stdout.read().strip()
+        stdin.close()
+        stdout.close()
         if self.nowplaying.lower().find("tsfjazz") == -1:
             self.radiokill()
-	elif self.radioMonitor == None or not self.radioMonitor.isAlive():
+        elif self.radioMonitor == None or not self.radioMonitor.isAlive():
             self.quitradio = False
             self.radioMonitor = threading.Thread( target = self.radio )
             self.radioMonitor.start()
