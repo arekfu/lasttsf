@@ -14,7 +14,6 @@
 #
 ############################################################################
 
-import ConfigParser
 import os
 import sys
 import threading
@@ -34,38 +33,6 @@ except:
     os.popen( "kdialog --sorry 'lastfmsubmitd (Last.fm bindings for Python) is required for this script.'" )
 
 debug_prefix = "[LastTSF]"
-
-class ConfigDialog( QDialog ):
-    """ Configuration widget """
-
-    def __init__( self ):
-        QDialog.__init__( self )
-        self.setWFlags( Qt.WDestructiveClose )
-        self.setCaption( "LastTSF - Amarok" )
-
-        foo = None
-        try:
-            config = ConfigParser.ConfigParser()
-            config.read( "testrc" )
-            foo = config.get( "General", "foo" )
-        except:
-            pass
-
-        self.adjustSize()
-
-    def save( self ):
-        """ Saves configuration to file """
-
-        self.file = file( "testrc", 'w' )
-
-        self.config = ConfigParser.ConfigParser()
-        self.config.add_section( "General" )
-        self.config.set( "General", "foo", foovar )
-        self.config.write( self.file )
-        self.file.close()
-
-        self.accept()
-
 
 class Notification( QCustomEvent ):
     __super_init = QCustomEvent.__init__
@@ -96,18 +63,6 @@ class Test( QApplication ):
         # Start separate thread for reading data from stdin
         self.stdinReader = threading.Thread( target = self.readStdin )
         self.stdinReader.start()
-
-        #self.readSettings()
-
-    def readSettings( self ):
-        """ Reads settings from configuration file """
-
-        try:
-            foovar = config.get( "General", "foo" )
-
-        except:
-            debug( "No config file found, using defaults." )
-
 
 ############################################################################
 # Stdin-Reader Thread
@@ -159,18 +114,7 @@ class Test( QApplication ):
 
     def configure( self ):
         debug( "configuration" )
-
-        self.dia = ConfigDialog()
-        self.dia.show()
-        self.connect( self.dia, SIGNAL( "destroyed()" ), self.readSettings )
-
-    def engineStatePlay( self ):
-        """ Called when Engine state changes to Play """
-        pass
-
-    def engineStateIdle( self ):
-        """ Called when Engine state changes to Idle """
-        pass
+        stdin, stdout = os.popen2("dcop amarok playlist popupMessage 'This script does not require any configuration.'")
 
     def engineStatePause( self ):
         """ Called when Engine state changes to Pause """
