@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ############################################################################
-# TSF.fm script 
+# LastTSF script 
 # submits metadata from TSF Jazz to Last.fm
 #
 # Depends on: Python 2.2, PyQt, lastfmsubmitd
