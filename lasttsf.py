@@ -208,6 +208,8 @@ class Test( QApplication ):
 		    debug( "WARNING: Character '|' not found in track name!" )
 		    return
 		artist, title = self.oldtrack[:pos].title(), self.oldtrack[pos+1:].title()
+
+		# Sanitize artist name and title
 		pos=artist.find("   ")
 		if pos != -1:
                     artist = artist[:pos]
@@ -216,12 +218,12 @@ class Test( QApplication ):
                 artist = sanitize( artist )
 		title = sanitize( title )
 
+		# Calculate track length
 		oldduration = self.duration
 		self.duration = time.time()
 		length = int( self.duration - oldduration )
-#		min = int( floor( length/60 ) )
-#		sec = int( floor( length - 60*min ) )
 
+		# Submit
                 debug( "Submitting track " + title + " by artist " + artist + ", length: " + str( length ) + " s"  )
 		song = {'artist': artist, \
 		        'title':  title, \
@@ -230,10 +232,9 @@ class Test( QApplication ):
 	        self.cli.log.info('Played song: %s' % lastfm.repr(song))
                 self.cli.submit(song)
 
-#		os.system( "/usr/lib/lastfmsubmitd/lastfmsubmit --artist '" \
-#		    + artist + "' --title '" + title + "' --length " \
-#		    + str( min ) + ":" + str( sec ) )
-            self.oldtrack = self.track
+		# Update the old track
+                self.oldtrack = self.track
+
             time.sleep(30)
 
     def checkTSF( self ):
